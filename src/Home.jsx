@@ -1,10 +1,38 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import FormInput from "./Component/FormInput/FormInput";
 import "./Home.css";
+import { useState } from "react";
+import Cart from "./Component/Cart/Cart";
 
 const Home = () => {
+  const[cart, setCart] = useState([]);
+  const navigate = useNavigate();
+
+  const handleClick = (item) => {
+    let present = false;
+
+    cart.forEach((product) => {
+      if(!item.id === product.id) {
+        present = true
+      }
+
+      //If the item is alerdy there then return and do nothing
+      if(present) {
+        return;
+      }
+
+      //Adding two array togther
+      setCart([...cart, item])
+    })
+  }
+
+  function navigateTo() {
+    // navigate('/contacts', );
+    navigate('Cart/Cart', {replace: true})
+  }
+
   const items = [
     {
       id:1,
@@ -51,15 +79,19 @@ const Home = () => {
                     <Link >No</Link>
                   </li>
               </ul>
-            <button><FontAwesomeIcon icon={faCartShopping} size="2xl" /></button>
+            <button onClick={navigateTo}><FontAwesomeIcon icon={faCartShopping} size="2xl" /></button>
           </div>
         </header>
-          {items.map((item) => (
-            <FormInput
-            key={item.id} 
-            {...item}
-            />
-          ))}
+        <div className="alignItems">
+            {items.map((item) => (
+              <FormInput
+              key={item.id} 
+              {...item}
+              handleClick = {handleClick}
+              />
+            ))}
+          </div>
+          {/* <Cart cart={cart} setCart={setCart}/> */}
       </div>
     )
 }
